@@ -1,0 +1,26 @@
+// 写入英文
+	CFile	fileTempletx;
+	if (fileTempletx.Open(strLuaConfigure, CFile::modeCreate | CFile::modeReadWrite, NULL))
+	{
+		CW2A a(strGraphicContent, CP_UTF8);
+		CStringA strUtf8Content = (LPSTR)a;
+		fileTempletx.Write(strUtf8Content, strUtf8Content.GetLength());
+		fileTempletx.Flush();
+		fileTempletx.Close();
+	}
+
+// 写入中文
+	CFile file;   //用于操作Excel文件
+	if (!file.Open(strLuaConfigure, CFile::modeCreate | CFile::modeWrite))
+	{
+		return false;
+	}
+
+	WORD dwHead = 0xFEFF;
+	file.Write(&dwHead, sizeof(WORD));
+
+	UINT len = strGraphicContent.GetLength()*sizeof(WCHAR);
+	LPCTSTR lpBuf = strGraphicContent.GetString();
+
+	file.Write(lpBuf, len);
+	file.Close();
